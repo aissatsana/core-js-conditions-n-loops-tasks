@@ -437,8 +437,37 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+
+function sortByAsc(arr) {
+  const copyArr = arr;
+  const sortedArr = new Array(arr.length);
+  const maxNumber = Math.max(...arr);
+  const minNumber = Math.min(...arr);
+  const offset = -minNumber;
+  const count = new Array(maxNumber + offset + 1);
+  for (let i = 0; i < count.length; i += 1) {
+    count[i] = 0;
+  }
+
+  for (let i = 0; i < arr.length; i += 1) {
+    count[arr[i] + offset] += 1;
+  }
+
+  for (let i = 1; i < count.length; i += 1) {
+    count[i] += count[i - 1];
+  }
+
+  for (let i = arr.length - 1; i >= 0; i -= 1) {
+    const num = arr[i];
+    sortedArr[count[num + offset] - 1] = num;
+    count[num + offset] -= 1;
+  }
+
+  for (let i = 0; i < arr.length; i += 1) {
+    copyArr[i] = sortedArr[i];
+  }
+
+  return arr;
 }
 
 /**
@@ -458,8 +487,32 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let newStr = str;
+  let newIterations = iterations;
+  let count = 0;
+
+  while (newIterations > 0) {
+    let evenPart = '';
+    let oddPart = '';
+    for (let j = 0; j < newStr.length; j += 1) {
+      if (j % 2 === 0) {
+        evenPart += newStr[j];
+      } else {
+        oddPart += newStr[j];
+      }
+    }
+
+    newStr = evenPart + oddPart;
+    newIterations -= 1;
+    count += 1;
+
+    if (newStr === str) {
+      newIterations = iterations % count;
+    }
+  }
+
+  return newStr;
 }
 
 /**
