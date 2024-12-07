@@ -532,8 +532,66 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const arr = [];
+  let newNumber = number;
+  let resNumber = number;
+  let i = 0;
+
+  while (newNumber > 0) {
+    arr[i] = newNumber % 10;
+    newNumber = Math.floor(newNumber / 10);
+    i += 1;
+  }
+  arr.reverse();
+  let weakestPoint = -1;
+  for (i = arr.length - 1; i > 0; i -= 1) {
+    if (arr[i] > arr[i - 1]) {
+      weakestPoint = i - 1;
+      break;
+    }
+  }
+
+  if (weakestPoint !== -1) {
+    let nearestToWeakestIndex = weakestPoint + 1;
+    let nearestToWeakest = arr[weakestPoint + 1] - arr[weakestPoint];
+    for (i = arr.length - 1; i > weakestPoint; i -= 1) {
+      if (
+        arr[i] > arr[weakestPoint] &&
+        arr[i] - arr[weakestPoint] < nearestToWeakest
+      ) {
+        nearestToWeakest = arr[i] - arr[weakestPoint];
+        nearestToWeakestIndex = i;
+      }
+    }
+
+    [arr[weakestPoint], arr[nearestToWeakestIndex]] = [
+      arr[nearestToWeakestIndex],
+      arr[weakestPoint],
+    ];
+
+    const leftPart = [];
+    const rightPart = [];
+
+    for (i = 0; i < arr.length; i += 1) {
+      if (i <= weakestPoint) {
+        leftPart.push(arr[i]);
+      } else {
+        rightPart.push(arr[i]);
+      }
+    }
+
+    rightPart.sort((a, b) => a - b);
+
+    const newArr = [...leftPart, ...rightPart];
+    resNumber = 0;
+
+    for (i = 0; i < newArr.length; i += 1) {
+      resNumber += 10 ** (newArr.length - i - 1) * newArr[i];
+    }
+  }
+
+  return resNumber;
 }
 
 module.exports = {
